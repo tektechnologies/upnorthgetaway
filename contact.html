@@ -1,0 +1,501 @@
+<?php
+
+
+
+// Set email variables
+
+$email_to = 'youremail@address.com';
+
+$email_subject = 'Form submission';
+
+
+
+// Set required fields
+
+$required_fields = array('fullname','email','comment');
+
+
+
+// set error messages
+
+$error_messages = array(
+
+	'fullname' => 'Please enter a Name to proceed.',
+
+	'email' => 'Please enter a valid Email Address to continue.',
+
+	'comment' => 'Please enter your Message to continue.'
+
+);
+
+
+
+// Set form status
+
+$form_complete = FALSE;
+
+
+
+// configure validation array
+
+$validation = array();
+
+
+
+// check form submittal
+
+if(!empty($_POST)) {
+
+	// Sanitise POST array
+
+	foreach($_POST as $key => $value) $_POST[$key] = remove_email_injection(trim($value));
+
+	
+
+	// Loop into required fields and make sure they match our needs
+
+	foreach($required_fields as $field) {		
+
+		// the field has been submitted?
+
+		if(!array_key_exists($field, $_POST)) array_push($validation, $field);
+
+		
+
+		// check there is information in the field?
+
+		if($_POST[$field] == '') array_push($validation, $field);
+
+		
+
+		// validate the email address supplied
+
+		if($field == 'email') if(!validate_email_address($_POST[$field])) array_push($validation, $field);
+
+	}
+
+	
+
+	// basic validation result
+
+	if(count($validation) == 0) {
+
+		// Prepare our content string
+
+		$email_content = 'New Website Comment: ' . "\n\n";
+
+		
+
+		// simple email content
+
+		foreach($_POST as $key => $value) {
+
+			if($key != 'submit') $email_content .= $key . ': ' . $value . "\n";
+
+		}
+
+		
+
+		// if validation passed ok then send the email
+
+		mail($email_to, $email_subject, $email_content);
+
+		
+
+		// Update form switch
+
+		$form_complete = TRUE;
+
+	}
+
+}
+
+
+
+function validate_email_address($email = FALSE) {
+
+	return (preg_match('/^[^@\s]+@([-a-z0-9]+\.)+[a-z]{2,}$/i', $email))? TRUE : FALSE;
+
+}
+
+
+
+function remove_email_injection($field = FALSE) {
+
+   return (str_ireplace(array("\r", "\n", "%0a", "%0d", "Content-Type:", "bcc:","to:","cc:"), '', $field));
+
+}
+
+
+
+?>
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+     <link href="css/styles.css" rel="stylesheet" type="text/css" media="screen">	
+     <link href="css/print.css" rel="stylesheet" type="text/css" media="print">
+     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+     
+     <script type="text/javascript" src="js/jquery.js"></script>	
+     <script type="text/javascript" src="js/modernizr.js"></script>
+     <script type="text/javascript" src="js/timothy.js"></script>
+     <script type="text/javascript" src="js/jquery.bxslider.min.js"></script>
+     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+     <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
+	 <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,300,700,200' rel='stylesheet' type='text/css'>
+	 <link href='http://fonts.googleapis.com/css?family=Archivo+Narrow:400,700' rel='stylesheet' type='text/css'>  
+     <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900,200italic,300italic,400italic,600italic,700italic,900italic' rel='stylesheet' type='text/css'>
+     
+     <link href="css/jquery.bxslider.css" rel="stylesheet" type="text/css" media="screen">
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+		  $('.bxslider').bxSlider({
+				captions:true, 
+				infiniteLoop:true, 
+				speed:1000,
+				auto: true
+
+			  });
+		});
+	</script>
+          
+     <link href="images/icons/iconic.png" rel="shortcut icon" type="image/icon.png">
+     <link href="apple-touch-icon.png" rel="apple-touch-icon">
+     
+     <meta name="robots" content="INDEX,FOLLOW" />
+     <meta name="robots" content="noimageindex" />	
+     
+        
+     <meta property="fb:admins" content="" />
+     <meta property="fb:page_id" content="" />
+     
+     <meta property="og:image" content="" />
+     <meta property="og:description" content=""/>
+     <meta property="og:title" content=""/> 
+     
+  
+
+     <meta name="keywords" content="up north getaway, camping, lake, fishing, cabin rental, st. germain lake, wisconsin, fire pit, canoe, hike, boat, swim" />
+	 <meta name="description" content="Cozy Cottage is a wonderfully furnished year round home. Cozy Cottage offers 3 bedrooms, and 2 baths; full size refrigerator/freezer
+        and range/oven. The cottage has a forced air furnace and central air. There is a fire pit located next to the cabin and a nice big yard for yard games.
+        Ample parking for vehicles and trailers. Renting of the Cozy Cottage includes a boat dock slip." />
+ 
+ <title>Cozy Cottage</title>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ <script type="text/javascript">
+
+		var nameError = '<?php echo $error_messages['fullname']; ?>';
+
+		var emailError = '<?php echo $error_messages['email']; ?>';
+
+		var commentError = '<?php echo $error_messages['comment']; ?>';
+
+	</script>
+ 
+ 
+ 
+ 
+ 
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<body>
+
+<div id="wrapper">
+
+	
+     <div id="top-bg">
+          
+          	<div id="tagline">
+               	<h2>Homepage of the Cozy Cottage!</h2>
+               </div>
+               
+          	<div id="topnav-top">
+                    <ul>
+                         <li><a href="http://www.rentwisconsincabins.com/detail.php?id=1361 ">Rent Wisconsin Cabins</a></li>
+                         <li><a href="http://www.st-germain.com/">St. Germain Chamber of Commerce</a></li>
+                         <li><a href="https://www.facebook.com/cozycottagestgermain/"><img src="images/icons/social-media/facebook_32.png" title="Facebook" alt="facebook" /></a></li>
+                    </ul>
+               </div>
+     </div>
+    
+    <div id="banner-bg">
+          <div id="banner">
+          <div id="name">
+               	<h2>UP NORTH GETAWAY</h2>
+               </div>
+          	<div id="topnav">
+            
+                    <ul>
+                        <li><a href="index.html">Welcome</a></li>
+                      <!--  <li><a href="about.html">About</a></li>
+                        <li><a href="products.html">Products</a></li>
+                        <li><a href="gallery.html">Gallery</a></li> -->
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+               </div>
+          </div>
+     </div>
+     
+     <div id="subbanner-bg">
+          <div id="subbanner">
+               <ul class="bxslider">
+                    <li><img src="images/banner/a_shore_canoe.png"  alt="shore_canoe"/></li>
+                    <li><img src="images/banner/backyard_deck.png"  alt="backyard_deck"/></li>
+                    <li><img src="images/banner/dockBoatWater.png" alt="dockBoatWater"  /></li>
+                    <li><img src="images/banner/LakeDock.png" alt="LakeDock" /></li>
+                    <li><img src="images/banner/signHouse.png" alt="signHouse" /></li>
+                    <li><img src="images/banner/twoJetSki.png" alt="twoJetSki" /></li>
+                         <li><img src="images/banner/a_backyardhouse.png" alt="backyardhouse" /></li>
+                         <li><img src="images/banner/a_bed.png" alt="a_bed"/></li>
+                         <li><img src="images/banner/a_boat_dock_water.png" alt="boat_dock_water"/></li>
+                         <li><img src="images/banner/a_cabin_shore.png" alt="cabin_shore"/></li>
+                         <li><img src="images/banner/a_cabins.png" alt="cabin" /></li>
+                         <li><img src="images/banner/a_dock_water_shore.png" alt="dock_water_shore"/></li>
+                         <li><img src="images/banner/a_firetime.png" alt="firetime.png"/></li>
+                         <li><img src="images/banner/a_lake_boating.png" alt="lake_boating"/></li>
+                         <li><img src="images/banner/a_picnictable.png" alt="picnictable"/></li>
+                         <li><img src="images/banner/a_picturewindow.png" alt="picturewindow"/></li>
+                         <li><img src="images/banner/a_shore.png" alt="shore" /></li>
+                         <li><img src="images/banner/a_yard_shore.png" alt="yard_shore"/></li>
+                    
+                    
+                    
+                    
+               </ul>               
+          </div>
+     </div>
+          
+     <div id="content-interior">
+		<div id="content-interior-main">
+<h1>Contact Us</h1>
+                    <p>Cozy Cottage is a wonderfully furnished year round home. Cozy Cottage offers 3 bedrooms, and 2 baths; full size refrigerator/freezer and range/oven. The cottage has a forced air furnace and central air. There is a fire pit located next to the cabin and a nice big yard for yard games.  Ample parking for vehicles and trailers. Renting of the Cozy Cottage includes a boat dock slip.</p>
+               <h2>Send Us A Message</h2>
+               
+                    <p >Be sure to see our availability and check out our additional amenities:<a href="http://www.rentwisconsincabins.com/detail.php?id=1361 ">&nbsp;&nbsp; Click Here!</a>
+                    </p>
+                  
+                    <form name="form" method="post" action="">
+                         <ol>
+                              <li>
+                              <label for="Name">Name</label>
+                              <input type="text" name="fullname" id="fullname" value="" />
+                              </li>
+                              <li>
+                              <label for="Email">Email</label>
+                              <input type="text" name="email" id="email" value="">
+                              </li>
+                              <li>
+                              <label for="Phone">Phone</label>
+                              <input type="text" name="Phone" id="Phone" value="">
+                              </li>
+                              <li>
+                              <label for="Message">Message</label>
+                              <textarea name="comment" id="comment" class="mess"></textarea>
+                              </li>
+                              <li>
+                              <input class="submit" type="submit" name="Submit" id="Submit" value="Submit">
+                              </li>
+                         </ol>
+                    </form>
+                    <p>Integer imperdiet interdum laoreet enim vel purus massa morbi vel in consequat turpis ut lacus egestas diam recusandae quam sit in. Metus tincidunt amet sed.</p>
+               
+                    <div id="location">
+                         <h2>Here is the Cozy Cottage</h2>
+<iframe width="700" height="300" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.google.com/maps/embed/v1/place?q=8814%20Sunrise%20Shores%20Circle%2C%20St%20Germain%2C%20WI%2054558&key=AIzaSyCceT1FEq3_3W7xkoaX8w_58fKB70XnVsY" allowfullscreen></iframe>
+<br /><small><a href="https://www.google.com/maps/place/8814+Sunrise+Shores+Cir,+St+Germain,+WI+54558/@45.9373569,-89.5442902,17z/data=!3m1!4b1!4m5!3m4!1s0x4d55c7d234d16139:0x9ed6f76b60dc15db!8m2!3d45.9373569!4d-89.5421015;source=embed" style="color:#0000FF;text-align:left">View Larger Map</a></small>
+                       
+                       
+                         <h4 class="address">Cozy Cottage</h4>
+                         <h4 class="address">8814 Sunrise Shores Circle, St Germain, WI 54558</h4>
+                         <h4 class="address">Telephone (319)-270-0807</h4>
+                         <h4 class="address">upngetaway@gmail.com</h4>
+                    </div>
+               <p>&nbsp;</p>
+
+       </div>
+          <div id="rightside">
+               <h2>4 Seasons Vacationland!</h2>
+               <p>Vilas County, at the top of Wisconsin, is the heart of the most outstanding vacation area in the upper Midwest. St. Germain is Northern Wisconsins four seasons vacationland.</p>
+                         <div class="float-left">
+                         <h3>Spring</h3>
+                         <ul class="nav">
+                              
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                         </ul>
+                         <h3>Summer</h3>
+                         <ul class="nav">
+                              
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                         </ul>
+                         </div>
+               <div class="float-left">
+                <h3>Fall</h3>
+                         <ul class="nav">
+                             
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                         </ul>
+                           <h3>Winter</h3>
+                         <ul class="nav">
+                            
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                                   <li><a href="sample.html">Sample Sidebar Link</a></li>
+                         </ul>
+                         </div>
+               <p class="clear">&nbsp;</p>
+               <p class="clear">Nun scelerisque morbi risus nec. Eget vulputate hendrerit parturient sapien erat vivamus tristique in nisl fringilla.</p>
+               <img src="images/jetskiLake.png" alt="jetskiLake">
+               
+               <h2>Hiking St. Germain</h2>
+               <p>From the intersection of Hwy 155 & Hwy 70 in St. Germain,continue west on Hwy 70 approximately .5 miles (just past the school entrance). Parking area is on the west side of Hwy 70.</p>
+               <p>&nbsp;<a href="https://www.vilaswi.com/awassa-nature-preserve-hiking-trail/" title="click for map">Map of Awassa Nature Preserve & Hiking Trail</a></p>
+                <img src="images/hiketrail.png" alt="hiketrail">
+               <p class="clear">Nun scelerisque morbi risus nec. Eget vulputate hendrerit parturient sapien erat vivamus tristique in nisl fringilla.</p>
+              <a href="sample.html">Sample Sidebar Link</a>
+               <img src="images/snow.png" alt="snow">
+               
+          </div>
+     </div>
+     
+     <div id="footer-bg">
+          <div id="footer">
+          	<div id="footerbox1">
+               	<h3>Amenities</h3>
+                    <p>Cabin Features.</p>
+                    <ul>
+                         <li><a href="#">Air Conditioning</a></li>
+                         <li><a href="#">Linens Provided</a></li>
+                         <li><a href="#">Furnished Kitchen</a></li>
+                         <li><a href="#">Vehicle and Trailer Parking</a></li>
+                         <li><a href="#">Fireplace</a></li>
+                         <li><a href="#">WiFi Internet</a></li>
+                      
+                    </ul>
+               	<h3>Out Door Area</h3>
+                    <p>Time to GETAWAY!</p>
+                    <ul>
+                         <li><a href="#">Outdoor Firepit</a></li>
+                         <li><a href="#">Pier/Dock</a></li>
+                         <li><a href="#">Playground Equipment</a></li>
+                         <li><a href="#">Outdoor Grill</a></li>
+                         <li><a href="#">Fish Cleaning House</a></li>
+                      
+
+                    </ul>
+               </div>
+          	<div id="footerbox2">
+               	<h3>Unique Features</h3>
+                    <p>Let us share everything we love about the Cozy Cottage:</p>
+                    <p>The Cozy Cottage is clean, tidy and comfortable. We give the cottage the same love we give our own home!</p>
+                    <p>The cottage sleeps up to 10 comfortably, with 2 full-baths. The full-size kitchen provides lots of space.</p>
+                    <p>Relax in the living room with a gas fireplace, or kickback under the stars by the outdoor fire pit.</p>
+                    <p>Hoping our renters love the outdoors as much as we do, we feel the cabin is in the prime location to feel away from it all yet in the heart of it all at the same time.</p>
+               </div>
+          	<div id="footerbox3">
+               	<h3>Things To Do</h3>
+               	<p>There is always something to do!</p>
+                    <ul>
+                         <li>Fishing (direct access to Big St Germain Lake), Boating, Kayaking, Jet skiing, Sailing, Swimming, Paddle boating, Water skiing / tubing, Wind surfing and MORE!</li>
+                         <li>Snowmobiling (direct access), ATV / UTV'ing (direct access), Hiking / walking, Cycling, Horseback riding, Waterfalls, Shopping, Antiquing, Farmer's markets and much more.</li>
+                    </ul>
+               	<p>As owners of Cozy Cottage, we are proud to offer our guests everything we would hope for in a vacation home.</p>
+               	<p>We are excited to share all that the location and home has to offer with you!</p>
+               </div>
+          	<div id="footerbox4">
+               	<h3>On Big St Germain Lake</h3>
+                    <p>Cozy Cottage is a wonderfully furnished year round home, located on the beautiful shores of Big St Germain Lake.</p>
+                    <ul>
+                         <li><a href="#">Cozy Cottage is located:</a></li>
+                         <li><a href="#">on Highway C</a></li>
+                         <li><a href="#">1 mile north of Highway 70</a></li>
+                         <li><a href="#">The cottage provides: </a></li>
+                         <li><a href="#">space for up to 10 guests,</a></li>
+                         
+                    </ul>
+                    <p>During the summer months, make the most of your vacation time and stay a week. Off peak-season, treat yourself to a nice long weekend and for those who love the Northwood's as much as we do, feel free to reserve a nice, long stay with us.</p>
+               </div>
+              	<h2 class="clear">&nbsp;</h2>
+          </div>
+     </div>
+
+	<div style="clear:both"></div>
+     
+     <div id="bottom-bg">
+     	<div id="bottom">
+                <p class="footer-text">©Copyright 2017 • All Rights Reserved • Cozy Cottage • UP NORTH GETAWAY, LLC.</p>
+          <p class="footer-text">8814 Sunrise Shores Circle, St Germain, WI 54558 &bull; upngetaway@gmail.com • (319) -270-0807</p>
+     <p class="footer-text"><a href="http://www.upnorthgetaway.rentals" title="Adobe Dreamweaver Templates">Chris &amp; Jody, Owners</a> 
+                     • <a href="http://www.st-germain.com/" title="St. Germain Chamber of Commerce">Chamber of Commerce</a> • Located on Big St Germain Lake, St Germain, WI.</p>
+            
+           
+            
+            
+               <div id="social-media">
+               
+               </div>
+          </div>
+     </div>
+     
+     
+
+        
+</div>
+
+</body>
+
+</html>
+

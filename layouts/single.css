@@ -1,0 +1,32 @@
+/* Timothy Framework - www.timothyframework.com */
+/* This work is licensed under the MIT License - http://www.opensource.org/licenses/mit-license.php */
+
+
+/* Color and Font Legend 
+
+
+
+*/
+
+
+/* Containers */
+
+#content 			{    }
+#content h1		{ 	}
+#content h2		{ 	}
+#content h3		{ 	}
+#content p		{ 	}
+#content img		{ 	}
+#content ul		{ 	}
+#content li		{ 	}
+#content a		{	}
+
+#content a:link		{ color:#000;	}
+#content a:visited		{ color:#000;	}
+#content a:active		{ color:#000;	}
+#content a:hover		{ color:#000;	}
+#content a:focus		{ color:#000;	}
+
+
+
+
